@@ -41,10 +41,10 @@ namespace Presentation.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpPut("Update/{id:int}")]
-        public async Task<IActionResult> UpdateSeoAsync([FromRoute] int id, [FromBody] SeoDtoForUpdate seoDtoForUpdate)
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateSeoAsync([FromBody] SeoDtoForUpdate seoDtoForUpdate)
         {
-            var seo = await _manager.SeoService.UpdateSeoAsync(id, seoDtoForUpdate,false);
+            var seo = await _manager.SeoService.UpdateSeoAsync(seoDtoForUpdate.SeoID, seoDtoForUpdate,false);
             return Ok(new UpdateRequest<SeoDto>(seo, 4, "Seo", _logger));
         }
 

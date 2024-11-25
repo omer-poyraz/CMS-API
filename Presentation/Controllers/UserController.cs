@@ -36,10 +36,10 @@ namespace Presentation.Controllers
             return Ok(new GetRequest<UserDto>(user, 2, "User", _logger));
         }
 
-        [HttpPut("Update/{userId}")]
-        public async Task<IActionResult> UpdateOneUserAsync([FromRoute] string? userId, [FromBody] UserDtoForUpdate userDtoForUpdate)
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateOneUserAsync([FromBody] UserDtoForUpdate userDtoForUpdate)
         {
-            var user = await _manager.UserService.UpdateOneUserAsync(userId, userDtoForUpdate, false);
+            var user = await _manager.UserService.UpdateOneUserAsync(userDtoForUpdate.UserId, userDtoForUpdate, false);
             return Ok(new UpdateRequest<UserDto>(user, 4, "User", _logger));
         }
 

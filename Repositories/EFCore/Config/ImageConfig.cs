@@ -8,7 +8,7 @@ namespace Repositories.EFCore.Config
     {
         public void Configure(EntityTypeBuilder<Image> builder)
         {
-            builder.HasKey(m => m.ImageID);
+            builder.HasKey(i => i.ImageID);
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
 {
     public class Image
     {
         public int ImageID { get; set; }
-        public string? FileName { get; set; }
         public string? FilePath { get; set; }
-        public string? FileFullPath { get; set; }
         public string? Field1TR { get; set; }
         public string? Field1EN { get; set; }
         public string? Field1AR { get; set; }

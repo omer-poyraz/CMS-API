@@ -1,13 +1,12 @@
 ﻿using Entities.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Entities.DTOs.ImageDto
 {
     public record ImageDto
     {
         public int ImageID { get; init; }
-        public string? FileName { get; init; }
-        public string? FilePath { get; init; }
-        public string? FileFullPath { get; init; }
+        public ICollection<IFormFile>? Files { get; init; }
         public string? Field1TR { get; init; }
         public string? Field1EN { get; init; }
         public string? Field1AR { get; init; }

@@ -1,10 +1,10 @@
-﻿namespace Entities.DTOs.ImageDto
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Entities.DTOs.ImageDto
 {
     public abstract record ImageDtoForManipulation
     {
-        public string? FileName { get; set; }
-        public string? FilePath { get; set; }
-        public string? FileFullPath { get; set; }
+        public ICollection<IFormFile>? File { get; set; }
         public string? Field1TR { get; set; }
         public string? Field1EN { get; set; }
         public string? Field1AR { get; set; }

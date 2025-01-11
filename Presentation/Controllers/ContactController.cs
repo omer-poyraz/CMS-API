@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Extensions;
 using Services.ResultModels.Requests;
 
 namespace Presentation.Controllers
@@ -12,6 +13,7 @@ namespace Presentation.Controllers
     {
         private readonly IServiceManager _manager;
         private readonly ILogService _logger;
+
         public ContactController(IServiceManager manager, ILogService logger)
         {
             _manager = manager;
@@ -19,6 +21,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("Contact", "Read")]
         public async Task<IActionResult> GetAllContactsAsync()
         {
             var contact = await _manager.ContactService.GetAllContactsAsync(false);
@@ -26,33 +29,43 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Get/{id:int}")]
-        public async Task<IActionResult> GetContactByIdAsync([FromRoute]int id)
+        [AuthorizePermission("Contact", "Read")]
+        public async Task<IActionResult> GetContactByIdAsync([FromRoute] int id)
         {
             var contact = await _manager.ContactService.GetContactByIdAsync(id, false);
             return Ok(new GetRequest<ContactDto>(contact, 2, "Contact", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateContactAsync([FromBody] ContactDtoForInsertion contactDtoForInsertion)
+        [AuthorizePermission("Contact", "Write")]
+        public async Task<IActionResult> CreateContactAsync(
+            [FromBody] ContactDtoForInsertion contactDtoForInsertion
+        )
         {
             var contact = await _manager.ContactService.CreateContactAsync(contactDtoForInsertion);
             return Ok(new CreateRequest<ContactDto>(contact, 3, "Contact", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("Update/{id:int}")]
-        public async Task<IActionResult> UpdateContactAsync([FromRoute] int id, [FromBody] ContactDtoForUpdate contactDtoForUpdate)
+        [AuthorizePermission("Contact", "Write")]
+        public async Task<IActionResult> UpdateContactAsync(
+            [FromRoute] int id,
+            [FromBody] ContactDtoForUpdate contactDtoForUpdate
+        )
         {
-            var contact = await _manager.ContactService.UpdateContactAsync(id, contactDtoForUpdate,false);
+            var contact = await _manager.ContactService.UpdateContactAsync(
+                id,
+                contactDtoForUpdate,
+                false
+            );
             return Ok(new UpdateRequest<ContactDto>(contact, 4, "Contact", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("Delete/{id:int}")]
-        public async Task<IActionResult> DeleteContactAsync([FromRoute]int id)
+        [AuthorizePermission("Contact", "Delete")]
+        public async Task<IActionResult> DeleteContactAsync([FromRoute] int id)
         {
-            var contact = await _manager.ContactService.DeleteContactAsync(id,false);
+            var contact = await _manager.ContactService.DeleteContactAsync(id, false);
             return Ok(new DeleteRequest<ContactDto>(contact, 5, "Contact", _logger));
         }
     }

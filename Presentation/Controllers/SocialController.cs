@@ -24,6 +24,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("Social", "Read")]
         public async Task<IActionResult> GetAllSocialsAsync()
         {
             var socials = await _manager.SocialService.GetAllSocialsAsync(false);
@@ -31,6 +32,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAllBySocial/{id:int}")]
+        [AuthorizePermission("Social", "Read")]
         public async Task<IActionResult> GetAllSocialsBySocialAsync([FromRoute] int id)
         {
             var socials = await _manager.SocialService.GetAllSocialsBySocialAsync(id, false);
@@ -38,14 +40,15 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Get/{id:int}")]
+        [AuthorizePermission("Social", "Read")]
         public async Task<IActionResult> GetSocialByIdAsync([FromRoute] int id)
         {
             var socials = await _manager.SocialService.GetSocialByIdAsync(id, false);
             return Ok(new GetRequest<SocialDto>(socials, 2, "Social", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("Create")]
+        [AuthorizePermission("Social", "Write")]
         public async Task<IActionResult> CreateSocialAsync(
             IFormFile? file,
             [FromForm] SocialDtoForInsertion socialsDtoForInsertion
@@ -66,8 +69,8 @@ namespace Presentation.Controllers
             return Ok(new CreateRequest<SocialDto>(socials, 3, "Social", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("Update")]
+        [AuthorizePermission("Social", "Write")]
         public async Task<IActionResult> UpdateSocialAsync(
             IFormFile? file,
             [FromForm] SocialDtoForUpdate socialsDtoForUpdate
@@ -95,8 +98,8 @@ namespace Presentation.Controllers
             return Ok(new UpdateRequest<SocialDto>(socials, 4, "Social", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("Delete/{id:int}")]
+        [AuthorizePermission("Social", "Delete")]
         public async Task<IActionResult> DeleteSocialAsync([FromRoute] int id)
         {
             var socials = await _manager.SocialService.DeleteSocialAsync(id, false);

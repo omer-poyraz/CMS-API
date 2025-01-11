@@ -14,6 +14,7 @@ namespace Entities.Models
         public string? AddField3 { get; set; }
         public string? AddField4 { get; set; }
         public string? AddField5 { get; set; }
+
         [ForeignKey("SocialMediaID")]
         public SocialMedia? SocialMedia { get; set; }
         public int? SocialMediaID { get; set; }

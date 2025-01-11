@@ -22,6 +22,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("Product", "Read")]
         public async Task<IActionResult> GetAllProductsAsync()
         {
             var product = await _manager.ProductService.GetAllProductsAsync(false);
@@ -29,6 +30,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAllByGroup/{id:int}")]
+        [AuthorizePermission("Product", "Read")]
         public async Task<IActionResult> GetAllProductsAsync([FromRoute] int id)
         {
             var product = await _manager.ProductService.GetAllProductsByGroupAsync(id, false);
@@ -36,14 +38,15 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Get/{id:int}")]
+        [AuthorizePermission("Product", "Read")]
         public async Task<IActionResult> GetProductByIdAsync([FromRoute] int id)
         {
             var product = await _manager.ProductService.GetProductByIdAsync(id, false);
             return Ok(new GetRequest<ProductDto>(product, 2, "Product", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("Create")]
+        [AuthorizePermission("Product", "Write")]
         public async Task<IActionResult> CreateProductAsync(
             IFormFile? file,
             [FromForm] ProductDtoForInsertion productDtoForInsertion
@@ -63,8 +66,8 @@ namespace Presentation.Controllers
             return Ok(new CreateRequest<ProductDto>(product, 3, "Product", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("Update")]
+        [AuthorizePermission("Product", "Write")]
         public async Task<IActionResult> UpdateProductAsync(
             IFormFile? file,
             [FromForm] ProductDtoForUpdate productDtoForUpdate
@@ -94,8 +97,8 @@ namespace Presentation.Controllers
             return Ok(new UpdateRequest<ProductDto>(product, 4, "Product", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("Delete/{id:int}")]
+        [AuthorizePermission("Product", "Delete")]
         public async Task<IActionResult> DeleteProductAsync([FromRoute] int id)
         {
             var product = await _manager.ProductService.DeleteProductAsync(id, false);

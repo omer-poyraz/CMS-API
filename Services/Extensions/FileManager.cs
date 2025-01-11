@@ -4,26 +4,44 @@ namespace Services.Extensions
 {
     public class FileManager
     {
-        public async static Task<Dictionary<string, object>> FileUpload(IFormFile file, int id, string folder)
+        public static async Task<List<Dictionary<string, object>>> FileUpload(
+            ICollection<IFormFile> files,
+            int id,
+            string folder
+        )
         {
-            var result = new Dictionary<string, object>();
+            var result = new List<Dictionary<string, object>>();
 
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder);
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
 
-            var fileName = $"{id}-{file.FileName}";
-            var path = Path.Combine(folderPath, fileName);
-            using (var stream = new FileStream(path, FileMode.Create))
+            foreach (var file in files)
             {
-                await file.CopyToAsync(stream);
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
+                var fileExtension = Path.GetExtension(file.FileName);
+
+                var uniqueFileName =
+                    $"{fileNameWithoutExtension}-{DateTime.UtcNow:yyyyMMddHHmmss}-{id}{fileExtension}";
+
+                var path = Path.Combine(folderPath, uniqueFileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var fileUrl = $"/{folder}/{uniqueFileName}";
+
+                result.Add(
+                    new Dictionary<string, object>
+                    {
+                        { "FilesName", uniqueFileName },
+                        { "FilesPath", folderPath },
+                        { "FilesFullPath", fileUrl },
+                    }
+                );
             }
-
-            var fileUrl = $"/{folder}/{fileName}";
-
-            result.Add("FilesName", fileName);
-            result.Add("FilesPath", folderPath);
-            result.Add("FilesFullPath", fileUrl); 
 
             return result;
         }

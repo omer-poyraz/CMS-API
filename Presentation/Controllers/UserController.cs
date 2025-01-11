@@ -1,20 +1,20 @@
-﻿using Entities.DTOs.UserDto;
+﻿using System.Text.Json;
+using Entities.DTOs.UserDto;
 using Entities.RequestFeature.User;
-using Services.ResultModels.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using System.Text.Json;
+using Services.ResultModels.Requests;
 
 namespace Presentation.Controllers
 {
-    //[Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("api/User")]
     public class UserController : ControllerBase
     {
         private readonly IServiceManager _manager;
         private readonly ILogService _logger;
+
         public UserController(IServiceManager manager, ILogService logger)
         {
             _manager = manager;
@@ -22,6 +22,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("User", "Read")]
         public async Task<IActionResult> GetAllUsersAsync([FromQuery] UserParameters userParameters)
         {
             var users = await _manager.UserService.GetAllUsersAsync(userParameters, false);
@@ -30,6 +31,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Get/{userId}")]
+        [AuthorizePermission("User", "Read")]
         public async Task<IActionResult> GetOneUserByIdAsync([FromRoute] string? userId)
         {
             var user = await _manager.UserService.GetOneUserByIdAsync(userId, false);
@@ -37,13 +39,21 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateOneUserAsync([FromBody] UserDtoForUpdate userDtoForUpdate)
+        [AuthorizePermission("User", "Write")]
+        public async Task<IActionResult> UpdateOneUserAsync(
+            [FromBody] UserDtoForUpdate userDtoForUpdate
+        )
         {
-            var user = await _manager.UserService.UpdateOneUserAsync(userDtoForUpdate.UserId, userDtoForUpdate, false);
+            var user = await _manager.UserService.UpdateOneUserAsync(
+                userDtoForUpdate.UserId,
+                userDtoForUpdate,
+                false
+            );
             return Ok(new UpdateRequest<UserDto>(user, 4, "User", _logger));
         }
 
         [HttpDelete("Delete/{userId}")]
+        [AuthorizePermission("User", "Delete")]
         public async Task<IActionResult> DeleteOneUserAsync([FromRoute] string? userId)
         {
             var user = await _manager.UserService.DeleteOneUserAsync(userId, false);
@@ -51,9 +61,18 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("ChangePassword/{userId}")]
-        public async Task<IActionResult> ChangePaswordAsync([FromRoute] string? userId, [FromBody] UserDtoForChangePassword changePassword)
+        [AuthorizePermission("User", "Write")]
+        public async Task<IActionResult> ChangePaswordAsync(
+            [FromRoute] string? userId,
+            [FromBody] UserDtoForChangePassword changePassword
+        )
         {
-            var user = await _manager.UserService.ChangePasswordAsync(userId, changePassword.CurrentPassword!, changePassword.NewPassword!, false);
+            var user = await _manager.UserService.ChangePasswordAsync(
+                userId,
+                changePassword.CurrentPassword!,
+                changePassword.NewPassword!,
+                false
+            );
             return Ok(new UpdateRequest<UserDto>(user, 4, "User", _logger));
         }
     }

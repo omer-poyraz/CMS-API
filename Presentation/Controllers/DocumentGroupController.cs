@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Extensions;
 using Services.ResultModels.Requests;
 
 namespace Presentation.Controllers
@@ -12,6 +13,7 @@ namespace Presentation.Controllers
     {
         private readonly IServiceManager _manager;
         private readonly ILogService _logger;
+
         public DocumentGroupController(IServiceManager manager, ILogService logger)
         {
             _manager = manager;
@@ -19,41 +21,75 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("DocumentGroup", "Read")]
         public async Task<IActionResult> GetAllDocumentGroupsAsync()
         {
-            var documentGroup = await _manager.DocumentGroupService.GetAllDocumentGroupsAsync(false);
-            return Ok(new GetAllRequest<IEnumerable<DocumentGroupDto>>(documentGroup, 1, "DocumentGroup", _logger));
+            var documentGroup = await _manager.DocumentGroupService.GetAllDocumentGroupsAsync(
+                false
+            );
+            return Ok(
+                new GetAllRequest<IEnumerable<DocumentGroupDto>>(
+                    documentGroup,
+                    1,
+                    "DocumentGroup",
+                    _logger
+                )
+            );
         }
 
         [HttpGet("Get/{id:int}")]
-        public async Task<IActionResult> GetDocumentGroupByIdAsync([FromRoute]int id)
+        [AuthorizePermission("DocumentGroup", "Read")]
+        public async Task<IActionResult> GetDocumentGroupByIdAsync([FromRoute] int id)
         {
-            var documentGroup = await _manager.DocumentGroupService.GetDocumentGroupByIdAsync(id, false);
+            var documentGroup = await _manager.DocumentGroupService.GetDocumentGroupByIdAsync(
+                id,
+                false
+            );
             return Ok(new GetRequest<DocumentGroupDto>(documentGroup, 2, "DocumentGroup", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateDocumentGroupAsync([FromBody] DocumentGroupDtoForInsertion documentGroupDtoForInsertion)
+        [AuthorizePermission("DocumentGroup", "Write")]
+        public async Task<IActionResult> CreateDocumentGroupAsync(
+            [FromBody] DocumentGroupDtoForInsertion documentGroupDtoForInsertion
+        )
         {
-            var documentGroup = await _manager.DocumentGroupService.CreateDocumentGroupAsync(documentGroupDtoForInsertion);
-            return Ok(new CreateRequest<DocumentGroupDto>(documentGroup, 3, "DocumentGroup", _logger));
+            var documentGroup = await _manager.DocumentGroupService.CreateDocumentGroupAsync(
+                documentGroupDtoForInsertion
+            );
+            return Ok(
+                new CreateRequest<DocumentGroupDto>(documentGroup, 3, "DocumentGroup", _logger)
+            );
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("Update/{id:int}")]
-        public async Task<IActionResult> UpdateDocumentGroupAsync([FromRoute] int id, [FromBody] DocumentGroupDtoForUpdate documentGroupDtoForUpdate)
+        [AuthorizePermission("DocumentGroup", "Write")]
+        public async Task<IActionResult> UpdateDocumentGroupAsync(
+            [FromRoute] int id,
+            [FromBody] DocumentGroupDtoForUpdate documentGroupDtoForUpdate
+        )
         {
-            var documentGroup = await _manager.DocumentGroupService.UpdateDocumentGroupAsync(id, documentGroupDtoForUpdate,false);
-            return Ok(new UpdateRequest<DocumentGroupDto>(documentGroup, 4, "DocumentGroup", _logger));
+            var documentGroup = await _manager.DocumentGroupService.UpdateDocumentGroupAsync(
+                id,
+                documentGroupDtoForUpdate,
+                false
+            );
+            return Ok(
+                new UpdateRequest<DocumentGroupDto>(documentGroup, 4, "DocumentGroup", _logger)
+            );
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("Delete/{id:int}")]
-        public async Task<IActionResult> DeleteDocumentGroupAsync([FromRoute]int id)
+        [AuthorizePermission("DocumentGroup", "Delete")]
+        public async Task<IActionResult> DeleteDocumentGroupAsync([FromRoute] int id)
         {
-            var documentGroup = await _manager.DocumentGroupService.DeleteDocumentGroupAsync(id,false);
-            return Ok(new DeleteRequest<DocumentGroupDto>(documentGroup, 5, "DocumentGroup", _logger));
+            var documentGroup = await _manager.DocumentGroupService.DeleteDocumentGroupAsync(
+                id,
+                false
+            );
+            return Ok(
+                new DeleteRequest<DocumentGroupDto>(documentGroup, 5, "DocumentGroup", _logger)
+            );
         }
     }
 }

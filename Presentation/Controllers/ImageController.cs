@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Extensions;
 using Services.ResultModels.Requests;
 
 namespace Presentation.Controllers
@@ -20,6 +21,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("Image", "Read")]
         public async Task<IActionResult> GetAllImagesAsync()
         {
             var image = await _manager.ImageService.GetAllImagesAsync(false);
@@ -27,6 +29,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Get/{id:int}")]
+        [AuthorizePermission("Image", "Read")]
         public async Task<IActionResult> GetImageByIdAsync([FromRoute] int id)
         {
             var image = await _manager.ImageService.GetImageByIdAsync(id, false);
@@ -34,14 +37,15 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Sort/{id:int}/{newSort:int}")]
+        [AuthorizePermission("Image", "Read")]
         public async Task<IActionResult> SortImageAsync([FromRoute] int id, int newSort)
         {
             var image = await _manager.ImageService.SortImageAsync(id, newSort, false);
             return Ok(new GetRequest<ImageDto>(image, 2, "Image", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("Create")]
+        [AuthorizePermission("Image", "Write")]
         public async Task<IActionResult> CreateImageAsync(
             [FromForm] ImageDtoForInsertion imageDtoForInsertion
         )
@@ -50,8 +54,8 @@ namespace Presentation.Controllers
             return Ok(new CreateRequest<ImageDto>(image, 3, "Image", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("Update")]
+        [AuthorizePermission("Image", "Write")]
         public async Task<IActionResult> UpdateImageAsync(
             [FromBody] ImageDtoForUpdate imageDtoForUpdate
         )
@@ -64,8 +68,8 @@ namespace Presentation.Controllers
             return Ok(new UpdateRequest<ImageDto>(image, 4, "Image", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("Delete/{id:int}")]
+        [AuthorizePermission("Image", "Delete")]
         public async Task<IActionResult> DeleteImageAsync([FromRoute] int id)
         {
             var image = await _manager.ImageService.DeleteImageAsync(id, false);

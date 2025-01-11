@@ -1,9 +1,9 @@
 ﻿using Entities.DTOs.PageDto;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Services.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Extensions;
 using Services.ResultModels.Requests;
 
 namespace Presentation.Controllers
@@ -14,6 +14,7 @@ namespace Presentation.Controllers
     {
         private readonly IServiceManager _manager;
         private readonly ILogService _logger;
+
         public PageController(IServiceManager manager, ILogService logger)
         {
             _manager = manager;
@@ -21,6 +22,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("Page", "Read")]
         public async Task<IActionResult> GetAllPagesAsync()
         {
             var page = await _manager.PageService.GetAllPagesAsync(false);
@@ -28,29 +30,35 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetByHeader/{id:int}")]
+        [AuthorizePermission("Page", "Read")]
         public async Task<IActionResult> GetPageByHeaderIdAsync([FromRoute] int id)
         {
             var page = await _manager.PageService.GetPageByHeaderIdAsync(id, false);
-            return Ok(new GetRequest<PageDto>(page,2,"Page",_logger));
+            return Ok(new GetRequest<PageDto>(page, 2, "Page", _logger));
         }
 
         [HttpGet("GetByUrl/{url}")]
+        [AuthorizePermission("Page", "Read")]
         public async Task<IActionResult> GetPageByHeaderURLAsync([FromRoute] string url)
         {
             var page = await _manager.PageService.GetPageByHeaderURLAsync(url, false);
-            return Ok(new GetRequest<PageDto>(page,2,"Page",_logger));
+            return Ok(new GetRequest<PageDto>(page, 2, "Page", _logger));
         }
 
         [HttpGet("Get/{id:int}")]
+        [AuthorizePermission("Page", "Read")]
         public async Task<IActionResult> GetPageByIdAsync([FromRoute] int id)
         {
             var page = await _manager.PageService.GetPageByIdAsync(id, false);
-            return Ok(new GetRequest<PageDto>(page,2,"Page",_logger));
+            return Ok(new GetRequest<PageDto>(page, 2, "Page", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("Create")]
-        public async Task<IActionResult> CreatePageAsync(IFormFile? file, [FromForm] PageDtoForInsertion pageDtoForInsertion)
+        [AuthorizePermission("Page", "Write")]
+        public async Task<IActionResult> CreatePageAsync(
+            IFormFile? file,
+            [FromForm] PageDtoForInsertion pageDtoForInsertion
+        )
         {
             var rnd = new Random();
             var imgId = rnd.Next(0, 100000);
@@ -64,27 +72,36 @@ namespace Presentation.Controllers
             return Ok(new CreateRequest<PageDto>(page, 3, "Page", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdatePageAsync(IFormFile? file, [FromForm] PageDtoForUpdate pageDtoForUpdate)
+        [AuthorizePermission("Page", "Write")]
+        public async Task<IActionResult> UpdatePageAsync(
+            IFormFile? file,
+            [FromForm] PageDtoForUpdate pageDtoForUpdate
+        )
         {
             var rnd = new Random();
             var imgId = rnd.Next(0, 100000);
-            
+
             var data = await _manager.PageService.GetPageByIdAsync(pageDtoForUpdate.PageID, false);
-            
+
             var upload = file != null ? await FileManager.FileUpload(file, imgId, "images") : null;
-        
-            pageDtoForUpdate.FileName = file != null ? $"{imgId}_{upload["FilesName"]}" : data.FileName;
+
+            pageDtoForUpdate.FileName =
+                file != null ? $"{imgId}_{upload["FilesName"]}" : data.FileName;
             pageDtoForUpdate.FilePath = file != null ? $"{upload["FilesPath"]}" : data.FilePath;
-            pageDtoForUpdate.FileFullPath = file != null ? $"{upload["FilesFullPath"]}" : data.FileFullPath;
-        
-            var page = await _manager.PageService.UpdatePageAsync(pageDtoForUpdate.PageID, pageDtoForUpdate, false);
+            pageDtoForUpdate.FileFullPath =
+                file != null ? $"{upload["FilesFullPath"]}" : data.FileFullPath;
+
+            var page = await _manager.PageService.UpdatePageAsync(
+                pageDtoForUpdate.PageID,
+                pageDtoForUpdate,
+                false
+            );
             return Ok(new UpdateRequest<PageDto>(page, 4, "Page", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("Delete/{id:int}")]
+        [AuthorizePermission("Page", "Delete")]
         public async Task<IActionResult> DeletePageAsync([FromRoute] int id)
         {
             var page = await _manager.PageService.DeletePageAsync(id, false);

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Services.Extensions;
 using Services.Contracts;
+using Services.Extensions;
 using Services.ResultModels.Requests;
 
 namespace Presentation.Controllers
@@ -22,6 +22,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AuthorizePermission("Header", "Read")]
         public async Task<IActionResult> GetAllHeaderAsync()
         {
             var header = await _manager.HeaderService.GetAllHeadersAsync(false);
@@ -29,6 +30,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Get/{id:int}")]
+        [AuthorizePermission("Header", "Read")]
         public async Task<IActionResult> GetHeaderByIdAsync([FromRoute] int id)
         {
             var header = await _manager.HeaderService.GetHeaderByIdAsync(id, false);
@@ -36,14 +38,15 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Sort/{id:int}/{newSort:int}")]
+        [AuthorizePermission("Header", "Read")]
         public async Task<IActionResult> SortHeaderAsync([FromRoute] int id, int newSort)
         {
             var header = await _manager.HeaderService.SortHeaderAsync(id, newSort, false);
             return Ok(new GetRequest<HeaderDto>(header, 2, "Header", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("Create")]
+        [AuthorizePermission("Header", "Write")]
         public async Task<IActionResult> CreateHeaderAsync(
             IFormFile? file,
             [FromForm] HeaderDtoForInsertion headerDtoForInsertion
@@ -61,8 +64,8 @@ namespace Presentation.Controllers
             return Ok(new CreateRequest<HeaderDto>(header, 3, "Header", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("Update")]
+        [AuthorizePermission("Header", "Write")]
         public async Task<IActionResult> UpdateHeaderAsync(
             IFormFile? file,
             [FromForm] HeaderDtoForUpdate headerDtoForUpdate
@@ -84,8 +87,8 @@ namespace Presentation.Controllers
             return Ok(new UpdateRequest<HeaderDto>(header, 4, "Header", _logger));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("Delete/{id:int}")]
+        [AuthorizePermission("Header", "Delete")]
         public async Task<IActionResult> DeleteHeaderAsync([FromRoute] int id)
         {
             var header = await _manager.HeaderService.DeleteHeaderAsync(id, false);

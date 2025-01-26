@@ -1,4 +1,5 @@
 using AutoMapper;
+using Entities.DTOs.ServicesDto;
 using Entities.DTOs.UserDto;
 using Entities.DTOs.UserPermissionDto;
 using Entities.Models;
@@ -19,6 +20,10 @@ namespace NorthAPI.Utilities.AutoMapper
             CreateMap<UserPermissionDtoForUpdate, UserPermission>().ReverseMap();
             CreateMap<UserPermission, UserPermissionDto>();
             CreateMap<UserPermissionDtoForInsertion, UserPermission>();
+
+            CreateMap<ServicesDtoForUpdate, Entities.Models.Services>().ReverseMap();
+            CreateMap<Entities.Models.Services, ServicesDto>();
+            CreateMap<ServicesDtoForInsertion, Entities.Models.Services>();
         }
     }
 }

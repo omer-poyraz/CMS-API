@@ -37,6 +37,9 @@ namespace NorthAPI.Extensions
             services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
             services.AddScoped<IUserPermissionService, UserPermissionService>();
 
+            services.AddScoped<IServicesRepository, ServicesRepository>();
+            services.AddScoped<IServicesService, ServicesService>();
+
             services.AddCors(opt =>
             {
                 opt.AddPolicy(

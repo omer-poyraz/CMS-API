@@ -25,21 +25,21 @@ namespace Repositories.EFCore
 
         public async Task<IEnumerable<UserPermission>> GetAllUserPermissionsAsync(
             bool trackChanges
-        ) => await FindAll(trackChanges).OrderBy(s => s.ID).Include(s => s.user).ToListAsync();
+        ) => await FindAll(trackChanges).OrderBy(s => s.ID).Include(s => s.User).ToListAsync();
 
         public async Task<IEnumerable<UserPermission>> GetUserPermissionsByUserIdAsync(
             string userId,
             bool trackChanges
         ) =>
             await FindAll(trackChanges)
-                .Where(s => s.userId == userId)
+                .Where(s => s.UserId == userId)
                 .OrderBy(s => s.ID)
-                .Include(s => s.user)
+                .Include(s => s.User)
                 .ToListAsync();
 
         public async Task<UserPermission> GetUserPermissionByIdAsync(int id, bool trackChanges) =>
             await FindByCondition(s => s.ID.Equals(id), trackChanges)
-                .Include(s => s.user)
+                .Include(s => s.User)
                 .SingleOrDefaultAsync();
 
         public UserPermission UpdateUserPermission(UserPermission userPermission)

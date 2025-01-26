@@ -2,6 +2,6 @@
 {
     public record UserPermissionDtoForInsertion : UserPermissionDtoForManipulation
     {
-        public DateTime? created_at { get; init; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; init; } = DateTime.UtcNow;
     }
 }

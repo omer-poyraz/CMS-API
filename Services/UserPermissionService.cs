@@ -109,7 +109,7 @@ namespace Services
         )
         {
             var permissions = await _context
-                .UserPermissions.Where(up => up.userId == userId && up.service_name == serviceName)
+                .UserPermissions.Where(up => up.UserId == userId && up.ServiceName == serviceName)
                 .FirstOrDefaultAsync();
 
             if (permissions == null)
@@ -119,14 +119,9 @@ namespace Services
 
             return permissionType switch
             {
-                "SuperAdmin" => permissions.can_super_admin,
-                "Read" => permissions.can_read,
-                "Write" => permissions.can_write,
-                "Delete" => permissions.can_delete,
-                "Btk" => permissions.can_btk,
-                "Ethernet" => permissions.can_ethernet,
-                "Consumer" => permissions.can_consumer,
-                "Hosting" => permissions.can_hosting,
+                "Read" => permissions.CanRead,
+                "Write" => permissions.CanWrite,
+                "Delete" => permissions.CanDelete,
                 _ => false,
             };
         }

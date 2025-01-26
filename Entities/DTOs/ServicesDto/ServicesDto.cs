@@ -1,17 +1,15 @@
 ﻿using System.Text.Json;
 using Entities.Models;
 
-namespace Entities.DTOs.UserPermissionDto
+namespace Entities.DTOs.ServicesDto
 {
-    public class UserPermissionDto
+    public class ServicesDto
     {
         public int ID { get; init; }
+        public string? Name { get; init; }
+        public string? EndPoint { get; init; }
         public string? UserId { get; init; }
         public User? User { get; init; }
-        public string? ServiceName { get; init; }
-        public bool CanRead { get; init; }
-        public bool CanWrite { get; init; }
-        public bool CanDelete { get; init; }
         public DateTime? CreatedAt { get; init; }
         public DateTime? UpdatedAt { get; init; }
     }

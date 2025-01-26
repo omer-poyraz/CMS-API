@@ -67,6 +67,11 @@ namespace Services
             user.LastName = userDtoForUpdate.LastName;
             user.Email = userDtoForUpdate.Email;
             user.PhoneNumber = userDtoForUpdate.PhoneNumber;
+            user.Gender = userDtoForUpdate.Gender;
+            user.Company = userDtoForUpdate.Company;
+            user.Phone2 = userDtoForUpdate.Phone2;
+            user.Fax = userDtoForUpdate.Fax;
+            user.Address = userDtoForUpdate.Address;
             user.UpdateAt = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 

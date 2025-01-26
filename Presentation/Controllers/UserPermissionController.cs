@@ -61,6 +61,25 @@ namespace Presentation.Controllers
             }
         }
 
+        [HttpPost("Create")]
+        [AuthorizePermission("UserPermission", "Write")]
+        public async Task<IActionResult> CreateOneUserPermissionAsync(
+            [FromBody] UserPermissionDtoForInsertion userPermissionDtoForInsertion
+        )
+        {
+            try
+            {
+                var user = await _manager.UserPermissionService.CreateUserPermissionAsync(
+                    userPermissionDtoForInsertion
+                );
+                return Ok(ApiResponse<UserPermissionDto>.Success(user, Messages.Success.Created));
+            }
+            catch (System.Exception)
+            {
+                return BadRequest(ApiResponse<UserPermissionDto>.Error(Messages.Error.NotFound));
+            }
+        }
+
         [HttpPut("Update")]
         [AuthorizePermission("UserPermission", "Write")]
         public async Task<IActionResult> UpdateOneUserAsync(

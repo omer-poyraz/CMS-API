@@ -5,5 +5,6 @@
         IAuthenticationService AuthenticationService { get; }
         IUserService UserService { get; }
         IUserPermissionService UserPermissionService { get; }
+        IServicesService ServicesService { get; }
     }
 }

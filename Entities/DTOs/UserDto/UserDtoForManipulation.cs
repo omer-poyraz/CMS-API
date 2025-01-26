@@ -18,5 +18,10 @@ namespace Entities.DTOs.UserDto
 
         [MaxLength(20)]
         public string? PhoneNumber { get; init; }
+        public string? Gender { get; init; }
+        public string? Company { get; init; }
+        public string? Phone2 { get; init; }
+        public string? Fax { get; init; }
+        public string? Address { get; init; }
     }
 }

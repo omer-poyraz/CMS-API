@@ -1,11 +1,12 @@
-using NorthAPI.Extensions;
 using Microsoft.Extensions.FileProviders;
+using NorthAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddControllers(opt =>
+builder
+    .Services.AddControllers(opt =>
     {
         opt.RespectBrowserAcceptHeader = true;
         opt.ReturnHttpNotAcceptable = true;
@@ -30,6 +31,8 @@ var app = builder.Build();
 app.UseDeveloperExceptionPage();
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseMiddleware<CreateSuperAdminMiddleware>();
 
 app.UseHttpsRedirection();
 app.UsePathBase("/api");

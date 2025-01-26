@@ -49,6 +49,12 @@ namespace Services.Extensions
             var user = await userManager.FindByNameAsync(userName);
             var userId = user?.Id;
 
+            var userRoles = await userManager.GetRolesAsync(user);
+            if (userRoles.Contains("Super Admin"))
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(userId))
             {
                 context.Result = new ObjectResult(

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Entities.DTOs.UserDto;
 using Entities.Models;
-using Entities.RequestFeature.User;
 using Entities.RequestFeature;
+using Entities.RequestFeature.User;
 using Microsoft.AspNetCore.Identity;
 using Repositories.Contracts;
 using Services.Contracts;
@@ -14,7 +14,12 @@ namespace Services
         private readonly IRepositoryManager _manager;
         private readonly IMapper _mapper;
         private UserManager<Entities.Models.User> _userManager;
-        public UserService(IRepositoryManager manager, IMapper mapper, UserManager<Entities.Models.User> userManager)
+
+        public UserService(
+            IRepositoryManager manager,
+            IMapper mapper,
+            UserManager<Entities.Models.User> userManager
+        )
         {
             _manager = manager;
             _mapper = mapper;
@@ -29,9 +34,15 @@ namespace Services
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<(IEnumerable<UserDto> userDtos, MetaData metaData)> GetAllUsersAsync(UserParameters userParameters, bool trackChanges)
+        public async Task<(IEnumerable<UserDto> userDtos, MetaData metaData)> GetAllUsersAsync(
+            UserParameters userParameters,
+            bool trackChanges
+        )
         {
-            var users = await _manager.UserRepository.GetAllUsersAsync(userParameters, trackChanges);
+            var users = await _manager.UserRepository.GetAllUsersAsync(
+                userParameters,
+                trackChanges
+            );
             var userDto = _mapper.Map<IEnumerable<UserDto>>(users);
             return (userDto, users.MetaData);
         }
@@ -42,7 +53,11 @@ namespace Services
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<UserDto> UpdateOneUserAsync(string? userId, UserDtoForUpdate userDtoForUpdate, bool trackChanges)
+        public async Task<UserDto> UpdateOneUserAsync(
+            string? userId,
+            UserDtoForUpdate userDtoForUpdate,
+            bool trackChanges
+        )
         {
             var userDto = await _manager.UserRepository.GetOneUserByIdAsync(userId, trackChanges);
             var user = await _userManager.FindByEmailAsync(userDto.Email!);
@@ -58,7 +73,12 @@ namespace Services
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<UserDto> ChangePasswordAsync(string? userId, string currentPassword, string newPassword, bool trackChanges)
+        public async Task<UserDto> ChangePasswordAsync(
+            string? userId,
+            string currentPassword,
+            string newPassword,
+            bool trackChanges
+        )
         {
             var userDto = await _manager.UserRepository.GetOneUserByIdAsync(userId, trackChanges);
             var user = await _userManager.FindByEmailAsync(userDto.Email!);

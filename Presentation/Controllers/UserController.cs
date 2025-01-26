@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using Entities.DTOs.UserDto;
 using Entities.RequestFeature.User;
+using Entities.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Extensions;
 using Services.ResultModels.Requests;
 
 namespace Presentation.Controllers
@@ -13,21 +15,33 @@ namespace Presentation.Controllers
     public class UserController : ControllerBase
     {
         private readonly IServiceManager _manager;
-        private readonly ILogService _logger;
 
-        public UserController(IServiceManager manager, ILogService logger)
+        public UserController(IServiceManager manager)
         {
             _manager = manager;
-            _logger = logger;
         }
 
         [HttpGet("GetAll")]
         [AuthorizePermission("User", "Read")]
         public async Task<IActionResult> GetAllUsersAsync([FromQuery] UserParameters userParameters)
         {
-            var users = await _manager.UserService.GetAllUsersAsync(userParameters, false);
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(users.metaData));
-            return Ok(new GetAllRequest<IEnumerable<UserDto>>(users.userDtos, 1, "User", _logger));
+            try
+            {
+                var users = await _manager.UserService.GetAllUsersAsync(userParameters, false);
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(users.metaData));
+                return Ok(
+                    ApiResponse<IEnumerable<UserDto>>.Success(
+                        users.userDtos,
+                        Messages.Success.Listed
+                    )
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(
+                    ApiResponse<IEnumerable<UserDto>>.Error(Messages.Error.ServerError)
+                );
+            }
         }
 
         [HttpGet("Get/{userId}")]
@@ -35,7 +49,7 @@ namespace Presentation.Controllers
         public async Task<IActionResult> GetOneUserByIdAsync([FromRoute] string? userId)
         {
             var user = await _manager.UserService.GetOneUserByIdAsync(userId, false);
-            return Ok(new GetRequest<UserDto>(user, 2, "User", _logger));
+            return Ok(ApiResponse<UserDto>.Success(user, Messages.Success.Retrieved));
         }
 
         [HttpPut("Update")]
@@ -49,7 +63,7 @@ namespace Presentation.Controllers
                 userDtoForUpdate,
                 false
             );
-            return Ok(new UpdateRequest<UserDto>(user, 4, "User", _logger));
+            return Ok(ApiResponse<UserDto>.Success(user, Messages.Success.Updated));
         }
 
         [HttpDelete("Delete/{userId}")]
@@ -57,7 +71,7 @@ namespace Presentation.Controllers
         public async Task<IActionResult> DeleteOneUserAsync([FromRoute] string? userId)
         {
             var user = await _manager.UserService.DeleteOneUserAsync(userId, false);
-            return Ok(new DeleteRequest<UserDto>(user, 5, "User", _logger));
+            return Ok(ApiResponse<UserDto>.Success(user, Messages.Success.Deleted));
         }
 
         [HttpPut("ChangePassword/{userId}")]
@@ -67,13 +81,20 @@ namespace Presentation.Controllers
             [FromBody] UserDtoForChangePassword changePassword
         )
         {
-            var user = await _manager.UserService.ChangePasswordAsync(
-                userId,
-                changePassword.CurrentPassword!,
-                changePassword.NewPassword!,
-                false
-            );
-            return Ok(new UpdateRequest<UserDto>(user, 4, "User", _logger));
+            try
+            {
+                var user = await _manager.UserService.ChangePasswordAsync(
+                    userId,
+                    changePassword.CurrentPassword!,
+                    changePassword.NewPassword!,
+                    false
+                );
+                return Ok(ApiResponse<UserDto>.Success(user, Messages.Success.PasswordChanged));
+            }
+            catch (System.Exception)
+            {
+                return BadRequest(ApiResponse<UserDto>.Error(Messages.Error.PasswordChangeFailed));
+            }
         }
     }
 }

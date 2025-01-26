@@ -1,4 +1,5 @@
 ﻿using Entities.DTOs.UserDto;
+using Entities.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,36 +13,90 @@ namespace Presentation.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IServiceManager _manager;
-        private readonly ILogService _logger;
-        public AuthenticationController(IServiceManager manager, ILogService logger)
+
+        public AuthenticationController(IServiceManager manager)
         {
             _manager = manager;
-            _logger = logger;
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthenticationDto)
+        public async Task<IActionResult> Login(
+            [FromBody] UserForAuthenticationDto userForAuthenticationDto
+        )
         {
-            if (!await _manager.AuthenticationService.ValidUser(userForAuthenticationDto))
-                return Unauthorized();
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(
+                        ApiResponse<TokenDto>.Error(Messages.Error.ValidationError, 400)
+                    );
 
-            var token = await _manager.AuthenticationService.CreateToken(true);
-            return Ok(token);
+                if (!await _manager.AuthenticationService.ValidUser(userForAuthenticationDto))
+                    return Unauthorized(
+                        ApiResponse<TokenDto>.Error(Messages.Error.InvalidCredentials, 401)
+                    );
+
+                var token = await _manager.AuthenticationService.CreateToken(true);
+                return Ok(ApiResponse<TokenDto>.Success(token, Messages.Success.LoginSuccess));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<TokenDto>.Error(Messages.Error.ServerError));
+            }
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
         {
-            var result = await _manager.AuthenticationService.RegisterUser(userForRegisterDto);
-            if (!result.Succeeded)
+            try
             {
-                foreach (var error in result.Errors)
+                if (!ModelState.IsValid)
+                    return BadRequest(
+                        ApiResponse<IdentityResult>.Error(Messages.Error.ValidationError, 400)
+                    );
+
+                var result = await _manager.AuthenticationService.RegisterUser(userForRegisterDto);
+
+                if (!result.Succeeded)
                 {
-                    ModelState.TryAddModelError(error.Code, error.Description);
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.TryAddModelError(error.Code, error.Description);
+                    }
+                    return BadRequest(
+                        ApiResponse<List<string>>.Error(Messages.Error.RegisterFailed, 400)
+                    );
                 }
-                return BadRequest(ModelState);
+
+                return Ok(
+                    ApiResponse<IdentityResult>.Success(result, Messages.Success.RegisterSuccess)
+                );
             }
-            return Ok(new CreateRequest<IdentityResult>(result, 3, "Authentication", _logger));
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    500,
+                    ApiResponse<IdentityResult>.Error(Messages.Error.ServerError)
+                );
+            }
+        }
+
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto)
+        {
+            try
+            {
+                var tokenDtoToReturn = await _manager.AuthenticationService.RefreshToken(tokenDto);
+
+                return Ok(
+                    ApiResponse<TokenDto>.Success(tokenDtoToReturn, Messages.Success.TokenRefreshed)
+                );
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<TokenDto>.Error(Messages.Error.ServerError));
+            }
         }
     }
 }

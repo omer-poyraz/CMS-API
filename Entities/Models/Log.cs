@@ -11,6 +11,7 @@ namespace Entities.Models
         public string? Message { get; set; }
         public string? Process { get; set; }
         public string? Result { get; set; }
+        public string? Ip { get; set; }
         public string? UserId { get; set; }
         public User? User { get; set; }
         public DateTime? CreatedAt { get; set; }

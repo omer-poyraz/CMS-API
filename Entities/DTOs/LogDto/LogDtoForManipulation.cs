@@ -10,6 +10,7 @@ namespace Entities.DTOs.LogDto
         public string? Message { get; init; }
         public string? Process { get; init; }
         public string? Result { get; init; }
+        public string? Ip { get; init; }
         public string? UserId { get; init; }
     }
 }

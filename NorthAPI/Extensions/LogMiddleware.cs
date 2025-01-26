@@ -1,10 +1,8 @@
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
-using Entities.DTOs.LogDto;
 using Entities.Models;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Services.Contracts;
+using Repositories.EFCore;
 
 namespace NorthAPI.Extensions
 {
@@ -12,17 +10,40 @@ namespace NorthAPI.Extensions
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<LogMiddleware> _logger;
-        private readonly IServiceManager _manager;
+        private readonly IServiceScopeFactory _scopeFactory;
+
+        private class ResponseModel
+        {
+            public string? Message { get; set; }
+            public int StatusCode { get; set; }
+            public object? Result { get; set; }
+        }
+
+        private class AuthResult
+        {
+            public string? UserId { get; set; }
+            public string? Name { get; set; }
+            public string? AccessToken { get; set; }
+            public string? RefreshToken { get; set; }
+        }
 
         public LogMiddleware(
             RequestDelegate next,
             ILogger<LogMiddleware> logger,
-            IServiceManager manager
+            IServiceScopeFactory scopeFactory
         )
         {
             _next = next;
             _logger = logger;
-            _manager = manager;
+            _scopeFactory = scopeFactory;
+        }
+
+        private string? GetIpAddress(HttpContext context)
+        {
+            var ip =
+                context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                ?? context.Connection.RemoteIpAddress?.ToString();
+            return ip;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -31,43 +52,84 @@ namespace NorthAPI.Extensions
 
             try
             {
-                using var responseBody = new MemoryStream();
-                context.Response.Body = responseBody;
+                using var scope = _scopeFactory.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<RepositoryContext>();
+
+                using var memStream = new MemoryStream();
+                context.Response.Body = memStream;
 
                 var endpoint = context.GetEndpoint();
-                var controllerName = endpoint
-                    ?.Metadata.GetMetadata<ControllerActionDescriptor>()
-                    ?.ControllerName;
-                var actionName = endpoint
-                    ?.Metadata.GetMetadata<ControllerActionDescriptor>()
-                    ?.ActionName;
+                var controllerActionDescriptor =
+                    endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
 
                 await _next(context);
 
-                responseBody.Seek(0, SeekOrigin.Begin);
-                var response = await new StreamReader(responseBody).ReadToEndAsync();
-                responseBody.Seek(0, SeekOrigin.Begin);
+                memStream.Seek(0, SeekOrigin.Begin);
+                string responseBody = await new StreamReader(memStream).ReadToEndAsync();
+                memStream.Seek(0, SeekOrigin.Begin);
 
-                var responseObj = JsonSerializer.Deserialize<dynamic>(response);
+                ResponseModel? responseObj = null;
+                string? userId = null;
 
-                var logDto = new LogDtoForInsertion
+                try
                 {
-                    ServiceName = controllerName,
+                    if (!string.IsNullOrEmpty(responseBody))
+                    {
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true,
+                        };
+
+                        responseObj = JsonSerializer.Deserialize<ResponseModel>(
+                            responseBody,
+                            options
+                        );
+
+                        if (
+                            controllerActionDescriptor?.ControllerName == "Authentication"
+                            && responseObj?.Result != null
+                        )
+                        {
+                            var resultJson = responseObj.Result.ToString();
+                            var authResult = JsonSerializer.Deserialize<AuthResult>(
+                                resultJson!,
+                                options
+                            );
+                            userId = authResult?.UserId;
+                        }
+                        else
+                        {
+                            userId = context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                        }
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    _logger.LogWarning(ex, "Failed to parse response body as JSON");
+                }
+
+                var log = new Log
+                {
+                    ServiceName = controllerActionDescriptor?.ControllerName,
                     StatusCode = context.Response.StatusCode,
-                    Message = responseObj?.message?.ToString(),
-                    Process = actionName,
-                    Result = responseObj?.result?.ToString(),
-                    UserId = context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                    Message = responseObj?.Message,
+                    Process = controllerActionDescriptor?.ActionName,
+                    Result = responseObj?.Result?.ToString(),
+                    UserId = userId,
+                    Ip = GetIpAddress(context),
                     CreatedAt = DateTime.UtcNow,
                 };
 
-                await _manager.LogService.CreateLogAsync(logDto);
-                await responseBody.CopyToAsync(originalBodyStream);
+                dbContext.Set<Log>().Add(log);
+                await dbContext.SaveChangesAsync();
+
+                await memStream.CopyToAsync(originalBodyStream);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in LogMiddleware");
-                await _next(context);
+                _logger.LogError(ex, "Error processing request in LogMiddleware");
+                context.Response.Body = originalBodyStream;
+                throw;
             }
             finally
             {

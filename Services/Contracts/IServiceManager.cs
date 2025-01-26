@@ -6,5 +6,6 @@
         IUserService UserService { get; }
         IUserPermissionService UserPermissionService { get; }
         IServicesService ServicesService { get; }
+        ILogService LogService { get; }
     }
 }

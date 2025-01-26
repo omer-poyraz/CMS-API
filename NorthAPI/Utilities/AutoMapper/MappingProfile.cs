@@ -1,4 +1,5 @@
 using AutoMapper;
+using Entities.DTOs.LogDto;
 using Entities.DTOs.ServicesDto;
 using Entities.DTOs.UserDto;
 using Entities.DTOs.UserPermissionDto;
@@ -24,6 +25,9 @@ namespace NorthAPI.Utilities.AutoMapper
             CreateMap<ServicesDtoForUpdate, Entities.Models.Services>().ReverseMap();
             CreateMap<Entities.Models.Services, ServicesDto>();
             CreateMap<ServicesDtoForInsertion, Entities.Models.Services>();
+
+            CreateMap<Log, LogDto>();
+            CreateMap<LogDtoForInsertion, Log>();
         }
     }
 }

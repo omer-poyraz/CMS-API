@@ -33,6 +33,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<CreateSuperAdminMiddleware>();
+app.UseMiddleware<LogMiddleware>();
 
 app.UseHttpsRedirection();
 app.UsePathBase("/api");

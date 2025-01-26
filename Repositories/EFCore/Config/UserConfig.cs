@@ -1,6 +1,6 @@
 ﻿using Entities.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Repositories.EFCore.Config
 {
@@ -9,7 +9,7 @@ namespace Repositories.EFCore.Config
         public void Configure(EntityTypeBuilder<User> builder)
         {
             //builder.Property(u => u.UserId).ValueGeneratedNev();
-            builder.HasKey(u=>u.Id);
+            builder.HasKey(u => u.Id);
         }
     }
 }

@@ -40,6 +40,9 @@ namespace NorthAPI.Extensions
             services.AddScoped<IServicesRepository, ServicesRepository>();
             services.AddScoped<IServicesService, ServicesService>();
 
+            services.AddScoped<ILogRepository, LogRepository>();
+            services.AddScoped<ILogService, LogService>();
+
             services.AddCors(opt =>
             {
                 opt.AddPolicy(

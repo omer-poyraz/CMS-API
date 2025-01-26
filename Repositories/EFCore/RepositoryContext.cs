@@ -12,6 +12,7 @@ namespace Repositories.EFCore
 
         public DbSet<UserPermission> UserPermissions { get; set; }
         public DbSet<Services> Services { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

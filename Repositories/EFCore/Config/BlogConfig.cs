@@ -17,7 +17,6 @@ namespace Repositories.EFCore.Config
                     v => JsonConvert.SerializeObject(v),
                     v => JsonConvert.DeserializeObject<ICollection<string>>(v)
                 );
-
         }
     }
 }

@@ -56,6 +56,21 @@ namespace Presentation.Controllers
             }
         }
 
+        [HttpGet("GetSlug/{slug}")]
+        [AuthorizePermission("Blog", "Read")]
+        public async Task<IActionResult> GetOneBlogBySlugAsync([FromRoute] string slug)
+        {
+            try
+            {
+                var user = await _manager.BlogService.GetBlogBySlugAsync(slug, false);
+                return Ok(ApiResponse<BlogDto>.Success(user, Messages.Success.Retrieved));
+            }
+            catch (System.Exception)
+            {
+                return BadRequest(ApiResponse<BlogDto>.Error(Messages.Error.NotFound));
+            }
+        }
+
         [HttpPost("Create")]
         [AuthorizePermission("Blog", "Write")]
         public async Task<IActionResult> CreateOneBlogAsync(

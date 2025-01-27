@@ -5,30 +5,34 @@ namespace Services
     public class ServiceManager : IServiceManager
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IBlogService _blogService;
+        private readonly ILogService _logService;
+        private readonly IServicesService _servicesService;
         private readonly IUserService _userService;
         private readonly IUserPermissionService _userPermissionService;
-        private readonly IServicesService _servicesService;
-        private readonly ILogService _logService;
 
         public ServiceManager(
             IAuthenticationService authenticationService,
-            IUserService userService,
-            IUserPermissionService userPermissionService,
+            IBlogService blogService,
+            ILogService logService,
             IServicesService servicesService,
-            ILogService logService
+            IUserService userService,
+            IUserPermissionService userPermissionService
         )
         {
             _authenticationService = authenticationService;
+            _blogService = blogService;
+            _logService = logService;
+            _servicesService = servicesService;
             _userService = userService;
             _userPermissionService = userPermissionService;
-            _servicesService = servicesService;
-            _logService = logService;
         }
 
         public IAuthenticationService AuthenticationService => _authenticationService;
+        public IBlogService BlogService => _blogService;
+        public ILogService LogService => _logService;
+        public IServicesService ServicesService => _servicesService;
         public IUserService UserService => _userService;
         public IUserPermissionService UserPermissionService => _userPermissionService;
-        public IServicesService ServicesService => _servicesService;
-        public ILogService LogService => _logService;
     }
 }

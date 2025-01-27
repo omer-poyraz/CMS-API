@@ -47,7 +47,7 @@ public class CreateSuperAdminMiddleware
             Company = "Liberyus",
             Phone2 = "05303561831",
             Fax = "05303561831",
-            Address = "Ayyıldız Mahallesi Mimar Sinan Sokak 13/16 Pursaklar/ANKARA",
+            Address = "Ayyıldız Mahallesi 1488. Sokak 13/16 Pursaklar/ANKARA",
             Roles = new[] { "Super Admin" },
         };
 

@@ -5,30 +5,34 @@ namespace Repositories.EFCore
     public class RepositoryManager : IRepositoryManager
     {
         private readonly RepositoryContext _context;
+        private readonly IBlogRepository _blogRepository;
+        private readonly ILogRepository _logRepository;
+        private readonly IServicesRepository _servicesRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserPermissionRepository _userPermissionRepository;
-        private readonly IServicesRepository _servicesRepository;
-        private readonly ILogRepository _logRepository;
 
         public RepositoryManager(
-            IUserRepository userRepository,
             RepositoryContext context,
-            IUserPermissionRepository userPermissionRepository,
+            IBlogRepository blogRepository,
+            ILogRepository logRepository,
             IServicesRepository servicesRepository,
-            ILogRepository logRepository
+            IUserRepository userRepository,
+            IUserPermissionRepository userPermissionRepository
         )
         {
             _context = context;
+            _blogRepository = blogRepository;
+            _logRepository = logRepository;
+            _servicesRepository = servicesRepository;
             _userRepository = userRepository;
             _userPermissionRepository = userPermissionRepository;
-            _servicesRepository = servicesRepository;
-            _logRepository = logRepository;
         }
 
+        public IBlogRepository BlogRepository => _blogRepository;
+        public ILogRepository LogRepository => _logRepository;
+        public IServicesRepository ServicesRepository => _servicesRepository;
         public IUserRepository UserRepository => _userRepository;
         public IUserPermissionRepository UserPermissionRepository => _userPermissionRepository;
-        public IServicesRepository ServicesRepository => _servicesRepository;
-        public ILogRepository LogRepository => _logRepository;
 
         public async Task SaveAsync()
         {

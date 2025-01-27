@@ -10,9 +10,10 @@ namespace Repositories.EFCore
         public RepositoryContext(DbContextOptions options)
             : base(options) { }
 
-        public DbSet<UserPermission> UserPermissions { get; set; }
-        public DbSet<Services> Services { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
         public DbSet<Log> Logs { get; set; }
+        public DbSet<Services> Services { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

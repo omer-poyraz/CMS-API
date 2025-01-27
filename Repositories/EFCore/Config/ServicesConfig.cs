@@ -29,6 +29,12 @@ namespace Repositories.EFCore.Config
                     ID = 3,
                     Name = "Services",
                     EndPoint = "/Services",
+                },
+                new Services
+                {
+                    ID = 4,
+                    Name = "Blog",
+                    EndPoint = "/Blog",
                 }
             );
         }

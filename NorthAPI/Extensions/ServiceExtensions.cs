@@ -31,17 +31,20 @@ namespace NorthAPI.Extensions
             services.AddSingleton(new FileReaderService());
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+            services.AddScoped<IBlogRepository, BlogRepository>();
+            services.AddScoped<IBlogService, BlogService>();
+
+            services.AddScoped<ILogRepository, LogRepository>();
+            services.AddScoped<ILogService, LogService>();
+
+            services.AddScoped<IServicesRepository, ServicesRepository>();
+            services.AddScoped<IServicesService, ServicesService>();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
             services.AddScoped<IUserPermissionService, UserPermissionService>();
-
-            services.AddScoped<IServicesRepository, ServicesRepository>();
-            services.AddScoped<IServicesService, ServicesService>();
-
-            services.AddScoped<ILogRepository, LogRepository>();
-            services.AddScoped<ILogService, LogService>();
 
             services.AddCors(opt =>
             {

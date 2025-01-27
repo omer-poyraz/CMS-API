@@ -2,10 +2,11 @@
 {
     public interface IRepositoryManager
     {
+        IBlogRepository BlogRepository { get; }
+        ILogRepository LogRepository { get; }
+        IServicesRepository ServicesRepository { get; }
         IUserRepository UserRepository { get; }
         IUserPermissionRepository UserPermissionRepository { get; }
-        IServicesRepository ServicesRepository { get; }
-        ILogRepository LogRepository { get; }
 
         Task SaveAsync();
     }

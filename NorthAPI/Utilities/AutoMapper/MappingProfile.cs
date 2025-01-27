@@ -1,4 +1,5 @@
 using AutoMapper;
+using Entities.DTOs.BlogDto;
 using Entities.DTOs.LogDto;
 using Entities.DTOs.ServicesDto;
 using Entities.DTOs.UserDto;
@@ -13,6 +14,17 @@ namespace NorthAPI.Utilities.AutoMapper
     {
         public MappingProfile()
         {
+            CreateMap<BlogDtoForUpdate, Blog>().ReverseMap();
+            CreateMap<Blog, BlogDto>();
+            CreateMap<BlogDtoForInsertion, Blog>();
+
+            CreateMap<Log, LogDto>();
+            CreateMap<LogDtoForInsertion, Log>();
+
+            CreateMap<ServicesDtoForUpdate, Entities.Models.Services>().ReverseMap();
+            CreateMap<Entities.Models.Services, ServicesDto>();
+            CreateMap<ServicesDtoForInsertion, Entities.Models.Services>();
+
             CreateMap<UserForRegisterDto, User>();
             CreateMap<UserDtoForUpdate, User>().ReverseMap();
             CreateMap<User, UserDto>();
@@ -21,13 +33,6 @@ namespace NorthAPI.Utilities.AutoMapper
             CreateMap<UserPermissionDtoForUpdate, UserPermission>().ReverseMap();
             CreateMap<UserPermission, UserPermissionDto>();
             CreateMap<UserPermissionDtoForInsertion, UserPermission>();
-
-            CreateMap<ServicesDtoForUpdate, Entities.Models.Services>().ReverseMap();
-            CreateMap<Entities.Models.Services, ServicesDto>();
-            CreateMap<ServicesDtoForInsertion, Entities.Models.Services>();
-
-            CreateMap<Log, LogDto>();
-            CreateMap<LogDtoForInsertion, Log>();
         }
     }
 }

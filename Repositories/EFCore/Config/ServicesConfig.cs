@@ -35,6 +35,36 @@ namespace Repositories.EFCore.Config
                     ID = 4,
                     Name = "Blog",
                     EndPoint = "/Blog",
+                },
+                new Services
+                {
+                    ID = 5,
+                    Name = "Form",
+                    EndPoint = "/Form",
+                },
+                new Services
+                {
+                    ID = 6,
+                    Name = "FormElement",
+                    EndPoint = "/FormElement",
+                },
+                new Services
+                {
+                    ID = 7,
+                    Name = "FormResponse",
+                    EndPoint = "/FormResponse",
+                },
+                new Services
+                {
+                    ID = 8,
+                    Name = "LibraryModel",
+                    EndPoint = "/LibraryModel",
+                },
+                new Services
+                {
+                    ID = 9,
+                    Name = "Language",
+                    EndPoint = "/Language",
                 }
             );
         }

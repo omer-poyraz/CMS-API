@@ -39,6 +39,8 @@ namespace Services.Extensions
                     char.GetUnicodeCategory(c)
                     != System.Globalization.UnicodeCategory.NonSpacingMark
                 )
+                .ToArray() // Add this line to convert IEnumerable to array
+                .AsSpan()
                 .ToString()
                 .ToLower()
                 .Replace("&", "-and-")

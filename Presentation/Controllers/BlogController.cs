@@ -23,7 +23,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetAll")]
-        [AuthorizePermission("Blog", "Read")]
+        // [AuthorizePermission("Blog", "Read")]
         public async Task<IActionResult> GetAllBlogsAsync()
         {
             try
@@ -42,7 +42,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Get/{id:int}")]
-        [AuthorizePermission("Blog", "Read")]
+        // [AuthorizePermission("Blog", "Read")]
         public async Task<IActionResult> GetOneBlogByIdAsync([FromRoute] int id)
         {
             try
@@ -57,7 +57,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetSlug/{slug}")]
-        [AuthorizePermission("Blog", "Read")]
+        // [AuthorizePermission("Blog", "Read")]
         public async Task<IActionResult> GetOneBlogBySlugAsync([FromRoute] string slug)
         {
             try
@@ -74,17 +74,17 @@ namespace Presentation.Controllers
         [HttpPost("Create")]
         [AuthorizePermission("Blog", "Write")]
         public async Task<IActionResult> CreateOneBlogAsync(
-            ICollection<IFormFile>? files,
-            [FromBody] BlogDtoForInsertion blogDtoForInsertion
+            ICollection<IFormFile>? file,
+            [FromForm] BlogDtoForInsertion blogDtoForInsertion
         )
         {
             try
             {
                 var rnd = new Random();
                 var imgId = rnd.Next(0, 100000);
-                if (files != null)
+                if (file != null)
                 {
-                    var uploadResults = await FileManager.FileUpload(files, imgId, "Blog");
+                    var uploadResults = await FileManager.FileUpload(file, imgId, "Blog");
                     var filePaths = uploadResults
                         .Select(uploadResult => uploadResult["FilesFullPath"].ToString())
                         .ToList();
@@ -100,19 +100,19 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("Update")]
-        [AuthorizePermission("Blog", "Write")]
+        // [AuthorizePermission("Blog", "Write")]
         public async Task<IActionResult> UpdateOneUserAsync(
-            ICollection<IFormFile>? files,
-            [FromBody] BlogDtoForUpdate blogDtoForUpdate
+            ICollection<IFormFile>? file,
+            [FromForm] BlogDtoForUpdate blogDtoForUpdate
         )
         {
             try
             {
                 var rnd = new Random();
                 var imgId = rnd.Next(0, 100000);
-                if (files != null)
+                if (file.Count() > 0)
                 {
-                    var uploadResults = await FileManager.FileUpload(files, imgId, "Blog");
+                    var uploadResults = await FileManager.FileUpload(file, imgId, "Blog");
                     var filePaths = uploadResults
                         .Select(uploadResult => uploadResult["FilesFullPath"].ToString())
                         .ToList();

@@ -34,8 +34,35 @@ namespace NorthAPI.Extensions
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<IBlogService, BlogService>();
 
+            services.AddScoped<IFormRepository, FormRepository>();
+            services.AddScoped<IFormService, FormService>();
+
+            services.AddScoped<IFormElementRepository, FormElementRepository>();
+            services.AddScoped<IFormElementService, FormElementService>();
+
+            services.AddScoped<IFormResponseRepository, FormResponseRepository>();
+            services.AddScoped<IFormResponseService, FormResponseService>();
+
+            services.AddScoped<IGalleryRepository, GalleryRepository>();
+            services.AddScoped<IGalleryService, GalleryService>();
+
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
+            services.AddScoped<ILanguageService, LanguageService>();
+
+            services.AddScoped<ILibraryModelRepository, LibraryModelRepository>();
+            services.AddScoped<ILibraryModelService, LibraryModelService>();
+
             services.AddScoped<ILogRepository, LogRepository>();
             services.AddScoped<ILogService, LogService>();
+
+            services.AddScoped<IModuleRepository, ModuleRepository>();
+            services.AddScoped<IModuleService, ModuleService>();
+
+            services.AddScoped<IModuleContentRepository, ModuleContentRepository>();
+            services.AddScoped<IModuleContentService, ModuleContentService>();
+
+            services.AddScoped<IModuleFieldRepository, ModuleFieldRepository>();
+            services.AddScoped<IModuleFieldService, ModuleFieldService>();
 
             services.AddScoped<IServicesRepository, ServicesRepository>();
             services.AddScoped<IServicesService, ServicesService>();
@@ -112,7 +139,7 @@ namespace NorthAPI.Extensions
         {
             services.AddSwaggerGen(s =>
             {
-                s.SwaggerDoc("v1", new OpenApiInfo { Title = "North API", Version = "v1" });
+                s.SwaggerDoc("v1", new OpenApiInfo { Title = "CMS API", Version = "v1" });
                 s.AddSecurityDefinition(
                     "Bearer",
                     new OpenApiSecurityScheme()

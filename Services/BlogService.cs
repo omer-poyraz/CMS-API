@@ -66,9 +66,22 @@ namespace Services
         )
         {
             var blogGroup = await _manager.BlogRepository.GetBlogByIdAsync(id, trackChanges);
+            var newFiles = new List<string>();
+            foreach (var file in blogGroup.files)
+            {
+                newFiles.Add(file);
+            }
+            if (blogGroupDtoForUpdate.files.Count() > 0)
+            {
+                foreach (var file in blogGroupDtoForUpdate.files)
+                {
+                    newFiles.Add(file);
+                }
+            }
+            blogGroup.files = newFiles;
+            blogGroup.Slug = blogGroupDtoForUpdate.Title.ToSeoUrl();
+            blogGroup.SlugEN = blogGroupDtoForUpdate.TitleEN.ToSeoUrl();
             blogGroup = _mapper.Map<Entities.Models.Blog>(blogGroupDtoForUpdate);
-            blogGroup.Slug = blogGroup.Title.ToSeoUrl();
-            blogGroup.SlugEN = blogGroup.TitleEN.ToSeoUrl();
             _manager.BlogRepository.UpdateBlog(blogGroup);
             await _manager.SaveAsync();
             return _mapper.Map<BlogDto>(blogGroup);

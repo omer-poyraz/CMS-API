@@ -72,7 +72,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("Create")]
-        // [AuthorizePermission("Module", "Write")]
+        [AuthorizePermission("Module", "Write")]
         public async Task<IActionResult> CreateOneModuleAsync(
             IFormCollection form,
             [FromForm] ModuleDtoForInsertion moduleDtoForInsertion
@@ -86,10 +86,10 @@ namespace Presentation.Controllers
                 moduleDtoForInsertion.Slug = JsonSerializer.Deserialize<Dictionary<string, string>>(
                     form["Slug"]
                 );
-                var rnd = new Random();
-                var imgId = rnd.Next(0, 100000);
-                if (moduleDtoForInsertion.file.Count() > 0)
+                if (moduleDtoForInsertion.file != null && moduleDtoForInsertion.file.Any())
                 {
+                    var rnd = new Random();
+                    var imgId = rnd.Next(0, 100000);
                     var uploadResults = await FileManager.FileUpload(
                         moduleDtoForInsertion.file,
                         imgId,
@@ -124,10 +124,10 @@ namespace Presentation.Controllers
                 moduleDtoForUpdate.Slug = JsonSerializer.Deserialize<Dictionary<string, string>>(
                     form["Slug"]
                 );
-                var rnd = new Random();
-                var imgId = rnd.Next(0, 100000);
-                if (moduleDtoForUpdate.file.Count() > 0)
+                if (moduleDtoForUpdate.file != null && moduleDtoForUpdate.file.Any())
                 {
+                    var rnd = new Random();
+                    var imgId = rnd.Next(0, 100000);
                     var uploadResults = await FileManager.FileUpload(
                         moduleDtoForUpdate.file,
                         imgId,

@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using AutoMapper;
 using Entities.DTOs.UserDto;
 using Entities.Exceptions.User;
 using Entities.Models;
@@ -7,10 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Repositories.EFCore;
 using Services.Contracts;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Services
 {
@@ -22,7 +22,12 @@ namespace Services
         private readonly IConfiguration _configuration;
         private User? _user;
 
-        public AuthenticationService(IMapper mapper, UserManager<User> userManager, IConfiguration configuration, RepositoryContext context)
+        public AuthenticationService(
+            IMapper mapper,
+            UserManager<User> userManager,
+            IConfiguration configuration,
+            RepositoryContext context
+        )
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -54,7 +59,7 @@ namespace Services
                 UserId = _user.Id,
                 Name = $"{_user.FirstName} {_user.LastName}",
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
             };
         }
 
@@ -63,7 +68,11 @@ namespace Services
             var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
             var user = await _userManager.FindByNameAsync(principal.Identity!.Name!);
 
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpireTime <= DateTime.UtcNow)
+            if (
+                user == null
+                || user.RefreshToken != tokenDto.RefreshToken
+                || user.RefreshTokenExpireTime <= DateTime.UtcNow
+            )
                 throw new RefreshTokenBadRequestException();
 
             _user = user;
@@ -85,7 +94,10 @@ namespace Services
         public async Task<bool> ValidUser(UserForAuthenticationDto authenticationDto)
         {
             _user = await _userManager.FindByNameAsync(authenticationDto.UserName!);
-            var result = (_user != null && await _userManager.CheckPasswordAsync(_user!, authenticationDto.Password!));
+            var result = (
+                _user != null
+                && await _userManager.CheckPasswordAsync(_user!, authenticationDto.Password!)
+            );
 
             return result;
         }
@@ -103,24 +115,33 @@ namespace Services
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings["validIssuer"],
                 ValidAudience = jwtSettings["validAudience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
 
-            var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out securityToken);
+            var principal = tokenHandler.ValidateToken(
+                accessToken,
+                tokenValidationParameters,
+                out securityToken
+            );
 
             var jwtSecurityToken = securityToken as JwtSecurityToken;
 
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            if (
+                jwtSecurityToken == null
+                || !jwtSecurityToken.Header.Alg.Equals(
+                    SecurityAlgorithms.HmacSha256,
+                    StringComparison.InvariantCultureIgnoreCase
+                )
+            )
             {
                 throw new SecurityTokenException("Invalid Token!");
             }
 
             return principal;
         }
-
 
         private string GenerateRefreshToken()
         {
@@ -142,10 +163,7 @@ namespace Services
 
         private async Task<List<Claim>> GetClaims()
         {
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name, _user!.UserName!)
-            };
+            var claims = new List<Claim>() { new Claim(ClaimTypes.Name, _user!.UserName!) };
 
             var roles = await _userManager.GetRolesAsync(_user);
 
@@ -156,9 +174,10 @@ namespace Services
             return claims;
         }
 
-
-
-        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        private JwtSecurityToken GenerateTokenOptions(
+            SigningCredentials signingCredentials,
+            List<Claim> claims
+        )
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var tokenOptions = new JwtSecurityToken(
@@ -170,6 +189,5 @@ namespace Services
             );
             return tokenOptions;
         }
-
     }
 }

@@ -7,8 +7,8 @@ namespace Entities.DTOs.ModuleDto
     {
         public int ID { get; init; }
         public ICollection<string>? Files { get; init; }
-        public Dictionary<string, string> Name { get; init; }
-        public Dictionary<string, string> Slug { get; init; }
+        public Dictionary<string, string>? Name { get; init; }
+        public Dictionary<string, string>? Slug { get; init; }
         public string? Site { get; init; }
         public ICollection<ModuleField> Fields { get; init; }
         public int? Sort { get; init; }

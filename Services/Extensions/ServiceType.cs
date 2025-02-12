@@ -3,6 +3,7 @@
     public class ServiceType
     {
         public string Service { get; set; }
+
         public ServiceType(int type)
         {
             if (type == 1)

@@ -94,7 +94,10 @@ namespace Presentation.Controllers
                 >(form["Slug"]);
                 var rnd = new Random();
                 var imgId = rnd.Next(0, 100000);
-                if (moduleContentDtoForInsertion.file.Count() > 0)
+                if (
+                    moduleContentDtoForInsertion.file != null
+                    && moduleContentDtoForInsertion.file.Any()
+                )
                 {
                     var uploadResults = await FileManager.FileUpload(
                         moduleContentDtoForInsertion.file,
@@ -132,10 +135,10 @@ namespace Presentation.Controllers
                 moduleContentDtoForUpdate.Slug = JsonSerializer.Deserialize<
                     Dictionary<string, string>
                 >(form["Slug"]);
-                var rnd = new Random();
-                var imgId = rnd.Next(0, 100000);
-                if (moduleContentDtoForUpdate.file.Count() > 0)
+                if (moduleContentDtoForUpdate.file != null && moduleContentDtoForUpdate.file.Any())
                 {
+                    var rnd = new Random();
+                    var imgId = rnd.Next(0, 100000);
                     var uploadResults = await FileManager.FileUpload(
                         moduleContentDtoForUpdate.file,
                         imgId,

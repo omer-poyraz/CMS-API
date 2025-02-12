@@ -8,8 +8,8 @@ namespace Entities.Models
         public int ID { get; set; }
         public string? Site { get; set; }
         public ICollection<string>? Files { get; set; }
-        public Dictionary<string, string> Slug { get; set; }
-        public Dictionary<string, string> Name { get; set; }
+        public Dictionary<string, string>? Slug { get; set; }
+        public Dictionary<string, string>? Name { get; set; }
         public ICollection<ModuleField> Fields { get; set; }
         public int? Sort { get; set; }
         public string? UserId { get; set; }

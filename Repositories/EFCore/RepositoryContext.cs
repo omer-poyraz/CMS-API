@@ -22,6 +22,7 @@ namespace Repositories.EFCore
         public DbSet<ModuleContent> ModuleContents { get; set; }
         public DbSet<ModuleField> ModuleFields { get; set; }
         public DbSet<Services> Services { get; set; }
+        public DbSet<Settings> Settings { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

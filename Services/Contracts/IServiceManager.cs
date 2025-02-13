@@ -15,6 +15,7 @@
         IModuleContentService ModuleContentService { get; }
         IModuleFieldService ModuleFieldService { get; }
         IServicesService ServicesService { get; }
+        ISettingsService SettingsService { get; }
         IUserService UserService { get; }
         IUserPermissionService UserPermissionService { get; }
     }

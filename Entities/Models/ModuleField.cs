@@ -13,7 +13,6 @@ namespace Entities.Models
         public string? FieldType { get; set; }
         public bool? IsRequired { get; set; }
         public int? Sort { get; set; }
-
         [ForeignKey("ModuleId")]
         public Module Module { get; set; }
         public int ModuleId { get; set; }
@@ -21,13 +20,5 @@ namespace Entities.Models
         public User? User { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        public ModuleField()
-        {
-            FieldName = new Dictionary<string, string>();
-            Slug = new Dictionary<string, string>();
-            Files = new List<string>();
-            Sort = ID;
-        }
     }
 }

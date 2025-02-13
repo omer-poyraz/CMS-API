@@ -17,6 +17,7 @@ namespace Repositories.EFCore
         private readonly IModuleContentRepository _moduleContentRepository;
         private readonly IModuleFieldRepository _moduleFieldRepository;
         private readonly IServicesRepository _servicesRepository;
+        private readonly ISettingsRepository _settingsRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserPermissionRepository _userPermissionRepository;
 
@@ -34,6 +35,7 @@ namespace Repositories.EFCore
             IModuleContentRepository moduleContentRepository,
             IModuleFieldRepository moduleFieldRepository,
             IServicesRepository servicesRepository,
+            ISettingsRepository settingsRepository,
             IUserRepository userRepository,
             IUserPermissionRepository userPermissionRepository
         )
@@ -51,6 +53,7 @@ namespace Repositories.EFCore
             _moduleContentRepository = moduleContentRepository;
             _moduleFieldRepository = moduleFieldRepository;
             _servicesRepository = servicesRepository;
+            _settingsRepository = settingsRepository;
             _userRepository = userRepository;
             _userPermissionRepository = userPermissionRepository;
         }
@@ -67,6 +70,7 @@ namespace Repositories.EFCore
         public IModuleContentRepository ModuleContentRepository => _moduleContentRepository;
         public IModuleFieldRepository ModuleFieldRepository => _moduleFieldRepository;
         public IServicesRepository ServicesRepository => _servicesRepository;
+        public ISettingsRepository SettingsRepository => _settingsRepository;
         public IUserRepository UserRepository => _userRepository;
         public IUserPermissionRepository UserPermissionRepository => _userPermissionRepository;
 

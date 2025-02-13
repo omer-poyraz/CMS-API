@@ -39,7 +39,7 @@ namespace Presentation.Controllers
                 var token = await _manager.AuthenticationService.CreateToken(true);
                 return Ok(ApiResponse<TokenDto>.Success(token, Messages.Success.LoginSuccess));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, ApiResponse<TokenDto>.Error(Messages.Error.ServerError));
             }
@@ -73,7 +73,7 @@ namespace Presentation.Controllers
                     ApiResponse<IdentityResult>.Success(result, Messages.Success.RegisterSuccess)
                 );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(
                     500,
@@ -93,7 +93,7 @@ namespace Presentation.Controllers
                     ApiResponse<TokenDto>.Success(tokenDtoToReturn, Messages.Success.TokenRefreshed)
                 );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, ApiResponse<TokenDto>.Error(Messages.Error.ServerError));
             }

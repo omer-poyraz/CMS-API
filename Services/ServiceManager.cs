@@ -17,6 +17,7 @@ namespace Services
         private readonly IModuleContentService _moduleContentService;
         private readonly IModuleFieldService _moduleFieldService;
         private readonly IServicesService _servicesService;
+        private readonly ISettingsService _settingsService;
         private readonly IUserService _userService;
         private readonly IUserPermissionService _userPermissionService;
 
@@ -34,6 +35,7 @@ namespace Services
             IModuleContentService moduleContentService,
             IModuleFieldService moduleFieldService,
             IServicesService servicesService,
+            ISettingsService settingsService,
             IUserService userService,
             IUserPermissionService userPermissionService
         )
@@ -51,6 +53,7 @@ namespace Services
             _moduleContentService = moduleContentService;
             _moduleFieldService = moduleFieldService;
             _servicesService = servicesService;
+            _settingsService = settingsService;
             _userService = userService;
             _userPermissionService = userPermissionService;
         }
@@ -68,6 +71,7 @@ namespace Services
         public IModuleContentService ModuleContentService => _moduleContentService;
         public IModuleFieldService ModuleFieldService => _moduleFieldService;
         public IServicesService ServicesService => _servicesService;
+        public ISettingsService SettingsService => _settingsService;
         public IUserService UserService => _userService;
         public IUserPermissionService UserPermissionService => _userPermissionService;
     }

@@ -11,11 +11,11 @@ using Entities.DTOs.ModuleContentDto;
 using Entities.DTOs.ModuleDto;
 using Entities.DTOs.ModuleFieldDto;
 using Entities.DTOs.ServicesDto;
+using Entities.DTOs.SettingsDto;
 using Entities.DTOs.UserDto;
 using Entities.DTOs.UserPermissionDto;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
 
 namespace NorthAPI.Utilities.AutoMapper
 {
@@ -69,6 +69,10 @@ namespace NorthAPI.Utilities.AutoMapper
             CreateMap<ServicesDtoForUpdate, Entities.Models.Services>().ReverseMap();
             CreateMap<Entities.Models.Services, ServicesDto>();
             CreateMap<ServicesDtoForInsertion, Entities.Models.Services>();
+
+            CreateMap<SettingsDtoForUpdate, Settings>().ReverseMap();
+            CreateMap<Settings, SettingsDto>();
+            CreateMap<SettingsDtoForInsertion, Settings>();
 
             CreateMap<UserForRegisterDto, User>();
             CreateMap<UserDtoForUpdate, User>().ReverseMap();

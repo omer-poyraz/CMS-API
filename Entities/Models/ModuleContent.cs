@@ -18,13 +18,5 @@ namespace Entities.Models
         public User? User { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        public ModuleContent()
-        {
-            Text = new Dictionary<string, string>();
-            Slug = new Dictionary<string, string>();
-            Files = new List<string>();
-            Sort = ID;
-        }
     }
 }

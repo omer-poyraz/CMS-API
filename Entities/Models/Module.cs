@@ -16,11 +16,5 @@ namespace Entities.Models
         public User? User { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        public Module()
-        {
-            Name = new Dictionary<string, string>();
-            Sort = ID;
-        }
     }
 }

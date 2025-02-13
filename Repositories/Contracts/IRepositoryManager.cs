@@ -16,6 +16,7 @@
         IServicesRepository ServicesRepository { get; }
         IUserRepository UserRepository { get; }
         IUserPermissionRepository UserPermissionRepository { get; }
+        ISettingsRepository SettingsRepository { get; }
 
         Task SaveAsync();
     }

@@ -67,6 +67,9 @@ namespace NorthAPI.Extensions
             services.AddScoped<IServicesRepository, ServicesRepository>();
             services.AddScoped<IServicesService, ServicesService>();
 
+            services.AddScoped<ISettingsRepository, SettingsRepository>();
+            services.AddScoped<ISettingsService, SettingsService>();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
 
